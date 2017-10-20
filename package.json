@@ -1,0 +1,24 @@
+{
+  "name": "superec-bc",
+  "version": "0.0.1",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "mkdir -p /home/vcap/app/.composer-connection-profiles/vanadium/; cp /home/vcap/app/favricenv/connection-profile/connection.json /home/vcap/app/.composer-connection-profiles/vanadium/; mkdir -p /var/tmp/keyValStore.sunrex/; cp /home/vcap/app/favricenv/creds/* /var/tmp/keyValStore.sunrex/; node app.js"
+  },
+  "author": "",
+  "license": "MIT",
+  "dependencies":{
+    "basic-auth-connect": "1.0.x",
+    "body-parser": "^1.17.2",
+    "cfenv": "~1.0.0",
+    "composer-client": "0.11.2",
+    "config": "^1.26.1",
+    "ejs": "^2.3.4",
+    "express": "4.1.x",
+    "jsonwebtoken": "7.4.x",
+    "multer": "^1.1.0",
+    "node-uuid": "1.4.8"
+  }
+}
