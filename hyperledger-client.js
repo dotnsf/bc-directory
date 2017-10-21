@@ -152,7 +152,7 @@ const HyperledgerClient = function() {
         resolved(user);
       }).catch(error => {
         console.log('HyperLedgerClient.getUserForLogin(): reject');
-        rejected(error); //. K.Kimura { "name":"ValidationException" }
+        rejected(error);
       });
     }, rejected);
   };

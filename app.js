@@ -53,19 +53,9 @@ apiRoutes.post( '/login', function( req, res ){
         res.end();
 
         //. Log 
-        var log_id = uuid.v1();
-        var body = user.name + ' Logged in.';
+        var body = 'User: ' + user.name + '(' + user.id + ') Logged in.';
         var user_id = user.id;
-        var log = {
-          id: log_id,
-          body: body,
-          user_id: user_id
-        };
-        client.createLog( log, result0 => {
-          console.log( 'log created.');
-        }, error => {
-          console.log( 'log error: ' + JSON.stringify( error, 2, null ) );
-        });
+        createLog( body, user_id );
       }, error => {
         console.log( 'createUserTx error: ' + JSON.stringify( error, 2, null ) );
         res.write( JSON.stringify( { status: true, token: token }, 2, null ) );
@@ -98,6 +88,11 @@ apiRoutes.post( '/adminuser', function( req, res ){
     client.createUserTx( user, result => {
       res.write( JSON.stringify( { status: true }, 2, null ) );
       res.end();
+
+      //. Log 
+      var body = 'Admin user password has set.';
+      var user_id = user.id;
+      createLog( body, user_id );
     }, error => {
       console.log( error );
       res.status( 500 );
@@ -160,9 +155,13 @@ apiRoutes.post( '/user', function( req, res ){
             loggedin: user0.loggedin
           };
           client.createUserTx( user1, result => {
-            console.log( 'result(1)=' + JSON.stringify( result, 2, null ) );
             res.write( JSON.stringify( { status: true, result: result }, 2, null ) );
             res.end();
+
+            //. Log 
+            var body = 'User: ' + user1.name + '(' + user1.id + ') was updated.';
+            var user_id = user.id;
+            createLog( body, user_id );
           }, error => {
             console.log( error );
             res.status( 500 );
@@ -180,9 +179,13 @@ apiRoutes.post( '/user', function( req, res ){
               loggedin: new Date( 0 )
             };
             client.createUserTx( user1, result => {
-              console.log( 'result(0)=' + JSON.stringify( result, 2, null ) );
               res.write( JSON.stringify( { status: true, result: result }, 2, null ) );
               res.end();
+
+              //. Log 
+              var body = 'User: ' + user1.name + '(' + user1.id + ') was created.';
+              var user_id = user.id;
+              createLog( body, user_id );
             }, error => {
               res.status( 500 );
               res.write( JSON.stringify( { status: false, message: error }, 2, null ) );
@@ -248,6 +251,11 @@ apiRoutes.delete( '/user', function( req, res ){
         client.deleteUserTx( id, result => {
           res.write( JSON.stringify( { status: true }, 2, null ) );
           res.end();
+
+          //. Log 
+          var body = 'User: ' + id + ' was deleted.';
+          var user_id = user.id;
+          createLog( body, user_id );
         }, error => {
           res.status( 404 );
           res.write( JSON.stringify( { status: false, message: error }, 2, null ) );
@@ -292,9 +300,13 @@ apiRoutes.post( '/group', function( req, res ){
             member_ids : member_ids
           };
           client.createGroupTx( group1, result => {
-            console.log( 'result(1)=' + JSON.stringify( result, 2, null ) );
             res.write( JSON.stringify( { status: true, result: result }, 2, null ) );
             res.end();
+
+            //. Log 
+            var body = 'Group: ' + group1.name + '(' + group1.id + ') was updated.';
+            var user_id = user.id;
+            createLog( body, user_id );
           }, error => {
             console.log( error );
             res.status( 500 );
@@ -310,9 +322,13 @@ apiRoutes.post( '/group', function( req, res ){
               member_ids: member_ids
             };
             client.createGroupTx( group1, result => {
-              console.log( 'result(0)=' + JSON.stringify( result, 2, null ) );
               res.write( JSON.stringify( { status: true, result: result }, 2, null ) );
               res.end();
+
+              //. Log 
+              var body = 'Group: ' + group1.name + '(' + group1.id + ') was created.';
+              var user_id = user.id;
+              createLog( body, user_id );
             }, error => {
               res.status( 500 );
               res.write( JSON.stringify( { status: false, message: error }, 2, null ) );
@@ -378,6 +394,11 @@ apiRoutes.delete( '/group', function( req, res ){
         client.deleteGroupTx( id, result => {
           res.write( JSON.stringify( { status: true }, 2, null ) );
           res.end();
+
+          //. Log 
+          var body = 'Group: ' + group1.id + ' was deleted.';
+          var user_id = user.id;
+          createLog( body, user_id );
         }, error => {
           res.status( 404 );
           res.write( JSON.stringify( { status: false, message: error }, 2, null ) );
@@ -442,7 +463,6 @@ apiRoutes.post( '/log', function( req, res ){
             user_id: user_id
           };
 
-          console.log( 'getLog: create/update log.' );
           client.createLog( log, result0 => {
             res.status( 202 ); //Accepted??
             res.write( JSON.stringify( { status: true, result: result0 }, 2, null ) );
@@ -497,6 +517,11 @@ apiRoutes.post( '/query', function( req, res ){
 
           res.write( JSON.stringify( result0, 2, null ) );
           res.end();
+
+          //. Log 
+          var body = 'User: ' + user.name + '(' + user.id + ') searched Logs.';
+          var user_id = user.id;
+          createLog( body, user_id );
         }, error => {
           res.status( 403 );
           res.write( JSON.stringify( error, 2, null ) );
@@ -539,6 +564,22 @@ apiRoutes.get( '/userinfo', function( req, res ){
     });
   }
 });
+
+
+function createLog( body, user_id ){
+  //. Log 
+  var log_id = uuid.v1();
+  var log = {
+    id: log_id,
+    body: body,
+    user_id: user_id
+  };
+  client.createLog( log, result => {
+    console.log( 'log created.');
+  }, error => {
+    console.log( 'log error: ' + JSON.stringify( error, 2, null ) );
+  });
+}
 
 
 app.use( '/api', apiRoutes );
