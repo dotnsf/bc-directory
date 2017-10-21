@@ -51,6 +51,21 @@ apiRoutes.post( '/login', function( req, res ){
         console.log( 'createUserTx success: ' + JSON.stringify( result, 2, null ) );
         res.write( JSON.stringify( { status: true, token: token }, 2, null ) );
         res.end();
+
+        //. Log 
+        var log_id = uuid.v1();
+        var body = user.name + ' Logged in.';
+        var user_id = user.id;
+        var log = {
+          id: log_id,
+          body: body,
+          user_id: user_id
+        };
+        client.createLog( log, result0 => {
+          console.log( 'log created.');
+        }, error => {
+          console.log( 'log error: ' + JSON.stringify( error, 2, null ) );
+        });
       }, error => {
         console.log( 'createUserTx error: ' + JSON.stringify( error, 2, null ) );
         res.write( JSON.stringify( { status: true, token: token }, 2, null ) );
@@ -133,7 +148,7 @@ apiRoutes.post( '/user', function( req, res ){
         var id = req.body.id;
         var password = req.body.password;
         var name = req.body.name;
-        var role = 1; //req.body.role;
+        var role = req.body.role;
 
         client.getUser( id, user0 => {
           //. 更新
@@ -427,27 +442,14 @@ apiRoutes.post( '/log', function( req, res ){
             user_id: user_id
           };
 
-          client.getLog( id, result => {
-            console.log( 'getLog: result = ' + JSON.stringify( result, 2, null ) );
-            if( result == null || result.user_id == user_id ){
-              console.log( 'getLog: create/update log.' );
-              client.createLog( log, result0 => {
-                res.status( 202 ); //Accepted??
-                res.write( JSON.stringify( { status: true, result: result0 }, 2, null ) );
-                res.end();
-              }, error => {
-                res.status( 500 );
-                res.write( JSON.stringify( { status: false, message: error }, 2, null ) );
-                res.end();
-              });
-            }else{
-              res.status( 401 );
-              res.write( JSON.stringify( { status: false, message: 'No update access.' }, 2, null ) );
-              res.end();
-            }
+          console.log( 'getLog: create/update log.' );
+          client.createLog( log, result0 => {
+            res.status( 202 ); //Accepted??
+            res.write( JSON.stringify( { status: true, result: result0 }, 2, null ) );
+            res.end();
           }, error => {
-            res.status( 400 );
-            res.write( JSON.stringify( { status: false, message: 'Failed to create/update new record.' }, 2, null ) );
+            res.status( 500 );
+            res.write( JSON.stringify( { status: false, message: error }, 2, null ) );
             res.end();
           });
         }else{
@@ -467,6 +469,46 @@ apiRoutes.post( '/log', function( req, res ){
 
 
 apiRoutes.post( '/query', function( req, res ){
+  var token = req.body.token || req.query.token || req.headers['x-access-token'];
+  if( !token ){
+    res.status( 401 );
+    res.write( JSON.stringify( { status: false, message: 'No token provided.' }, 2, null ) );
+    res.end();
+  }else{
+    //. トークンをデコード
+    jwt.verify( token, app.get( 'superSecret' ), function( err, user ){
+      if( err ){
+        res.status( 401 );
+        res.write( JSON.stringify( { status: false, message: 'Invalid token.' }, 2, null ) );
+        res.end();
+      }else if( user && user.id ){
+        console.log( 'POST /query : user.id = ' + user.id );
+
+        var datetimeFrom = req.body.datetimeFrom;
+        var datetimeTo = req.body.datetimeTo;
+        var condition = { user_id: user.id, datetimeFrom:datetimeFrom, datetimeTo: datetimeTo };
+        console.log( 'query: condition = ' + JSON.stringify( condition, 2, null ) );
+
+        client.queryLogs( condition, result => {
+          var result0 = [];
+          result.forEach(log => {
+            result0.push( log );
+          });
+
+          res.write( JSON.stringify( result0, 2, null ) );
+          res.end();
+        }, error => {
+          res.status( 403 );
+          res.write( JSON.stringify( error, 2, null ) );
+          res.end();
+        });
+      }else{
+        res.status( 401 );
+        res.write( JSON.stringify( { status: false, message: 'Valid token is missing.' }, 2, null ) );
+        res.end();
+      }
+    });
+
   res.status( 501 );
   res.write( JSON.stringify( { status: false, message: 'Not implemented yet.' }, 2, null ) );
   res.end();
