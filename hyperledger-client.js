@@ -41,9 +41,6 @@ const HyperledgerClient = function() {
       transaction.password = user.password;
       transaction.name = user.name;
       transaction.role = user.role;
-      if( user.loggedin ){
-        transaction.loggedin = user.loggedin;
-      }
 
       return vm.businessNetworkConnection.submitTransaction(transaction)
       .then(result => {

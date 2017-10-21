@@ -47,12 +47,6 @@ apiRoutes.post( '/login', function( req, res ){
     if( user.password == password ){
       var token = jwt.sign( user, app.get( 'superSecret' ), { expiresIn: '24h' } );
       //console.log( 'token=' + token);
-
-      //. 現在時刻
-      var dt = new Date();
-
-      //. loggedin 更新
-      user.loggedin = dt;
       client.createUserTx( user, result => {
         console.log( 'createUserTx success: ' + JSON.stringify( result, 2, null ) );
         res.write( JSON.stringify( { status: true, token: token }, 2, null ) );
