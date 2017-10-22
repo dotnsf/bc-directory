@@ -148,7 +148,7 @@ const HyperledgerClient = function() {
       .then(registry => {
         return registry.resolve(id);
       }).then(user => {
-        console.log( JSON.stringify( user, 2, null ) );
+        //console.log( JSON.stringify( user, 2, null ) );
         resolved(user);
       }).catch(error => {
         console.log('HyperLedgerClient.getUserForLogin(): reject');
@@ -256,7 +256,7 @@ const HyperledgerClient = function() {
     //. クエリー文を動的に作成してビルドする
     if( condition.user_id ){
       params['user_id'] = condition.user_id;
-      where += 'user_id = _$user_id';
+      where += 'user_id == _$user_id';
     }
     if( condition.datetimeFrom && condition.datetimeTo ){
       params['datetimeFrom'] = condition.datetimeFrom;

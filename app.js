@@ -49,13 +49,14 @@ apiRoutes.post( '/login', function( req, res ){
       //console.log( 'token=' + token);
       client.createUserTx( user, result => {
         console.log( 'createUserTx success: ' + JSON.stringify( result, 2, null ) );
-        res.write( JSON.stringify( { status: true, token: token }, 2, null ) );
-        res.end();
 
         //. Log 
         var body = 'User: ' + user.name + '(' + user.id + ') Logged in.';
         var user_id = user.id;
         createLog( body, user_id );
+
+        res.write( JSON.stringify( { status: true, token: token }, 2, null ) );
+        res.end();
       }, error => {
         console.log( 'createUserTx error: ' + JSON.stringify( error, 2, null ) );
         res.write( JSON.stringify( { status: true, token: token }, 2, null ) );
@@ -86,13 +87,13 @@ apiRoutes.post( '/adminuser', function( req, res ){
     var user = { id: id, password: password, name: 'admin', role: 0, loggedin: null };
 
     client.createUserTx( user, result => {
-      res.write( JSON.stringify( { status: true }, 2, null ) );
-      res.end();
-
       //. Log 
       var body = 'Admin user password has set.';
       var user_id = user.id;
       createLog( body, user_id );
+
+      res.write( JSON.stringify( { status: true }, 2, null ) );
+      res.end();
     }, error => {
       console.log( error );
       res.status( 500 );
@@ -155,13 +156,13 @@ apiRoutes.post( '/user', function( req, res ){
             loggedin: user0.loggedin
           };
           client.createUserTx( user1, result => {
-            res.write( JSON.stringify( { status: true, result: result }, 2, null ) );
-            res.end();
-
             //. Log 
             var body = 'User: ' + user1.name + '(' + user1.id + ') was updated.';
             var user_id = user.id;
             createLog( body, user_id );
+
+            res.write( JSON.stringify( { status: true, result: result }, 2, null ) );
+            res.end();
           }, error => {
             console.log( error );
             res.status( 500 );
@@ -179,13 +180,13 @@ apiRoutes.post( '/user', function( req, res ){
               loggedin: new Date( 0 )
             };
             client.createUserTx( user1, result => {
-              res.write( JSON.stringify( { status: true, result: result }, 2, null ) );
-              res.end();
-
               //. Log 
               var body = 'User: ' + user1.name + '(' + user1.id + ') was created.';
               var user_id = user.id;
               createLog( body, user_id );
+
+              res.write( JSON.stringify( { status: true, result: result }, 2, null ) );
+              res.end();
             }, error => {
               res.status( 500 );
               res.write( JSON.stringify( { status: false, message: error }, 2, null ) );
@@ -249,13 +250,13 @@ apiRoutes.delete( '/user', function( req, res ){
         var id = req.body.id;
 
         client.deleteUserTx( id, result => {
-          res.write( JSON.stringify( { status: true }, 2, null ) );
-          res.end();
-
           //. Log 
           var body = 'User: ' + id + ' was deleted.';
           var user_id = user.id;
           createLog( body, user_id );
+
+          res.write( JSON.stringify( { status: true }, 2, null ) );
+          res.end();
         }, error => {
           res.status( 404 );
           res.write( JSON.stringify( { status: false, message: error }, 2, null ) );
@@ -300,13 +301,13 @@ apiRoutes.post( '/group', function( req, res ){
             member_ids : member_ids
           };
           client.createGroupTx( group1, result => {
-            res.write( JSON.stringify( { status: true, result: result }, 2, null ) );
-            res.end();
-
             //. Log 
             var body = 'Group: ' + group1.name + '(' + group1.id + ') was updated.';
             var user_id = user.id;
             createLog( body, user_id );
+
+            res.write( JSON.stringify( { status: true, result: result }, 2, null ) );
+            res.end();
           }, error => {
             console.log( error );
             res.status( 500 );
@@ -322,13 +323,13 @@ apiRoutes.post( '/group', function( req, res ){
               member_ids: member_ids
             };
             client.createGroupTx( group1, result => {
-              res.write( JSON.stringify( { status: true, result: result }, 2, null ) );
-              res.end();
-
               //. Log 
               var body = 'Group: ' + group1.name + '(' + group1.id + ') was created.';
               var user_id = user.id;
               createLog( body, user_id );
+
+              res.write( JSON.stringify( { status: true, result: result }, 2, null ) );
+              res.end();
             }, error => {
               res.status( 500 );
               res.write( JSON.stringify( { status: false, message: error }, 2, null ) );
@@ -392,13 +393,13 @@ apiRoutes.delete( '/group', function( req, res ){
         var id = req.body.id;
 
         client.deleteGroupTx( id, result => {
-          res.write( JSON.stringify( { status: true }, 2, null ) );
-          res.end();
-
           //. Log 
           var body = 'Group: ' + group1.id + ' was deleted.';
           var user_id = user.id;
           createLog( body, user_id );
+
+          res.write( JSON.stringify( { status: true }, 2, null ) );
+          res.end();
         }, error => {
           res.status( 404 );
           res.write( JSON.stringify( { status: false, message: error }, 2, null ) );
@@ -515,13 +516,13 @@ apiRoutes.post( '/query', function( req, res ){
             result0.push( log );
           });
 
-          res.write( JSON.stringify( result0, 2, null ) );
-          res.end();
-
           //. Log 
           var body = 'User: ' + user.name + '(' + user.id + ') searched Logs.';
           var user_id = user.id;
           createLog( body, user_id );
+
+          res.write( JSON.stringify( result0, 2, null ) );
+          res.end();
         }, error => {
           res.status( 403 );
           res.write( JSON.stringify( error, 2, null ) );
@@ -534,9 +535,9 @@ apiRoutes.post( '/query', function( req, res ){
       }
     });
 
-    res.status( 501 );
-    res.write( JSON.stringify( { status: false, message: 'Not implemented yet.' }, 2, null ) );
-    res.end();
+//    res.status( 501 );
+//    res.write( JSON.stringify( { status: false, message: 'Not implemented yet.' }, 2, null ) );
+//    res.end();
   }
 });
 
@@ -575,7 +576,7 @@ function createLog( body, user_id ){
     body: body,
     user_id: user_id
   };
-  client.createLog( log, result => {
+  client.createLogTx( log, result => {
     console.log( 'log created.');
   }, error => {
     console.log( 'log error: ' + JSON.stringify( error, 2, null ) );
