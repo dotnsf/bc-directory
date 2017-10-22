@@ -516,10 +516,12 @@ apiRoutes.post( '/query', function( req, res ){
             result0.push( log );
           });
 
+/* 
           //. Log 
           var body = 'User: ' + user.name + '(' + user.id + ') searched Logs.';
           var user_id = user.id;
           createLog( body, user_id );
+*/
 
           res.write( JSON.stringify( result0, 2, null ) );
           res.end();
