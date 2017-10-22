@@ -1,9 +1,9 @@
 swagger: '2.0'
 info:
   description: BlockChain Directory on Hyperledger Fabric API Document
-  version: 0.0.5
+  version: 0.0.1
   title: BlockChain Directory REST API
-host: bc-directory.mybluemix.net
+host: '192.168.0.12:6002'
 basePath: /
 tags:
   - name: user
