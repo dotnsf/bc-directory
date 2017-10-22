@@ -534,9 +534,10 @@ apiRoutes.post( '/query', function( req, res ){
       }
     });
 
-  res.status( 501 );
-  res.write( JSON.stringify( { status: false, message: 'Not implemented yet.' }, 2, null ) );
-  res.end();
+    res.status( 501 );
+    res.write( JSON.stringify( { status: false, message: 'Not implemented yet.' }, 2, null ) );
+    res.end();
+  }
 });
 
 apiRoutes.get( '/userinfo', function( req, res ){
