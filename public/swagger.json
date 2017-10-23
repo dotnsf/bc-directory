@@ -1,0 +1,462 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "description": "BlockChain Directory on Hyperledger Fabric API Document",
+    "version": "0.0.1",
+    "title": "BlockChain Directory REST API"
+  },
+  "host": "192.168.0.12:6002",
+  "basePath": "/",
+  "tags": [
+    {
+      "name": "user",
+      "description": "アカウントに対する処理"
+    },
+    {
+      "name": "log",
+      "description": "記録に対する処理"
+    }
+  ],
+  "schemes": [
+    "http",
+    "https"
+  ],
+  "paths": {
+    "/api/adminuser": {
+      "post": {
+        "tags": [
+          "user"
+        ],
+        "summary": "管理者ユーザー作成",
+        "description": "管理者ロールを持ったユーザー admin を作成します。ブロックチェーン環境構築直後に一回だけ実行します。",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "schema": {
+              "$ref": "#/definitions/AdminUserRequest"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "成功"
+          },
+          "400": {
+            "description": "作成済み"
+          },
+          "500": {
+            "description": "サーバーエラー"
+          }
+        }
+      }
+    },
+    "/api/login": {
+      "post": {
+        "tags": [
+          "user"
+        ],
+        "summary": "ユーザー認証",
+        "description": "ユーザーID、パスワードを用いて認証します。ここで取得されるtokenを他のAPIの認証に使用します",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "$ref": "#/definitions/LoginRequest"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "ログイン成功",
+            "schema": {
+              "$ref": "#/definitions/LoginResult"
+            }
+          },
+          "401": {
+            "description": "ログインエラー"
+          }
+        }
+      }
+    },
+    "/api/users": {
+      "get": {
+        "tags": [
+          "user"
+        ],
+        "summary": "ユーザー一覧取得",
+        "description": "登録済みのユーザーの一覧を取得する",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "$ref": "#/definitions/UserRequest"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "取得成功",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/UserResult"
+              }
+            }
+          },
+          "401": {
+            "description": "ログインエラー"
+          },
+          "500": {
+            "description": "実行エラー"
+          }
+        }
+      }
+    },
+    "/api/user": {
+      "get": {
+        "tags": [
+          "user"
+        ],
+        "summary": "ユーザー取得",
+        "description": "登録済みのユーザーを取得する",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "$ref": "#/definitions/UserIdRequest"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "取得成功",
+            "schema": {
+              "$ref": "#/definitions/UserResult"
+            }
+          },
+          "401": {
+            "description": "ログインエラー"
+          },
+          "404": {
+            "description": "該当ユーザーが見つからない"
+          },
+          "500": {
+            "description": "実行エラー"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "user"
+        ],
+        "summary": "ユーザー作成／更新",
+        "description": "ユーザーを新規に作成（または更新）する",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "$ref": "#/definitions/UserRequest"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "成功"
+          },
+          "401": {
+            "description": "権限エラー"
+          },
+          "500": {
+            "description": "実行エラー"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "user"
+        ],
+        "summary": "ユーザー削除",
+        "description": "ユーザーを削除する",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "$ref": "#/definitions/UserIdRequest"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "成功"
+          },
+          "401": {
+            "description": "権限エラー"
+          },
+          "404": {
+            "description": "該当ユーザーが見つからない"
+          },
+          "500": {
+            "description": "実行エラー"
+          }
+        }
+      }
+    },
+    "/api/log": {
+      "get": {
+        "tags": [
+          "log"
+        ],
+        "summary": "ログ取得",
+        "description": "登録済みのログを取得する",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "$ref": "#/definitions/LogIdRequest"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "取得成功"
+          },
+          "401": {
+            "description": "ログインエラー"
+          },
+          "404": {
+            "description": "該当データが見つからない"
+          },
+          "500": {
+            "description": "実行エラー"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "log"
+        ],
+        "summary": "ログ作成",
+        "description": "ログを新規に作成する",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "$ref": "#/definitions/LogRequest"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "成功"
+          },
+          "401": {
+            "description": "権限エラー"
+          },
+          "500": {
+            "description": "実行エラー"
+          }
+        }
+      }
+    },
+    "/api/query": {
+      "post": {
+        "tags": [
+          "log"
+        ],
+        "summary": "ログ検索",
+        "description": "ログを検索する",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "$ref": "#/definitions/QueryRequest"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "成功"
+          },
+          "401": {
+            "description": "権限エラー"
+          },
+          "403": {
+            "description": "検索失敗"
+          },
+          "500": {
+            "description": "実行エラー"
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "AdminUserRequest": {
+      "type": "object",
+      "properties": {
+        "password": {
+          "type": "string",
+          "format": "password"
+        }
+      }
+    },
+    "LoginRequest": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "string"
+        },
+        "password": {
+          "type": "string",
+          "format": "password"
+        }
+      }
+    },
+    "UserRequest": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "ユーザーID"
+        },
+        "password": {
+          "type": "string",
+          "description": "パスワード"
+        },
+        "name": {
+          "type": "string",
+          "description": "名前"
+        }
+      }
+    },
+    "UserIdRequest": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "ユーザーID"
+        }
+      }
+    },
+    "LogRequest": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "ログID"
+        },
+        "body": {
+          "type": "string",
+          "description": "ログ本文"
+        }
+      }
+    },
+    "LogIdRequest": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique ID"
+        }
+      }
+    },
+    "QueryRequest": {
+      "type": "object",
+      "properties": {
+        "user_id": {
+          "type": "string",
+          "description": "UserID"
+        },
+        "srcCompanyCode": {
+          "type": "string",
+          "description": "仕入元会社コード"
+        },
+        "datetimeFrom": {
+          "type": "string",
+          "description": "日時〜"
+        },
+        "datetimeTo": {
+          "type": "string",
+          "description": "〜日時"
+        }
+      }
+    },
+    "LoginResult": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "type": "boolean",
+          "description": "true: 成功、 false: 失敗"
+        },
+        "token": {
+          "type": "string",
+          "format": "string",
+          "description": "アクセストークン"
+        },
+        "message": {
+          "type": "string",
+          "format": "string",
+          "description": "エラーメッセージ"
+        }
+      }
+    },
+    "UserResult": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "ユーザーID"
+        },
+        "password": {
+          "type": "string",
+          "description": "パスワード"
+        },
+        "name": {
+          "type": "string",
+          "description": "名前"
+        },
+        "loggedin": {
+          "type": "string",
+          "description": "最終ログイン日時"
+        }
+      }
+    }
+  }
+}

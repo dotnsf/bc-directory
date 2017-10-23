@@ -27,13 +27,13 @@ var port = appEnv.port || 3000;
 app.use( bodyParser.urlencoded( { extended: true } ) );
 app.use( bodyParser.json() );
 
-app.all( '/apidoc.html', basicAuth( function( user, pass ){
+app.all( '/apidoc', basicAuth( function( user, pass ){
   return ( user === settings.basic_username && pass === settings.basic_password );
 }));
 app.use( express.static( __dirname + '/public' ) );
 
 app.get( '/', function( req, res ){
-  res.write( '/apidoc.html for API Document' );
+  res.write( '/apidoc for API Document' );
   res.end();
 });
 
